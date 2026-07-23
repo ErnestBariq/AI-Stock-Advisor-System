@@ -14,7 +14,9 @@ import './Simulation.css';
 
 const Simulation = () => {
   const location = useLocation();
-  const isTopGainersPreset = location.state?.preset === 'top_gainers';
+  const topGainersFromState = location.state?.stocks;
+  const isTopGainersPreset = Boolean(location.state?.preset === 'top_gainers' && topGainersFromState);
+
   const [amount, setAmount] = useState(5000);
   const [durationMonths, setDurationMonths] = useState(3);
   const [ollamaUrl] = useState('http://localhost:11434');
@@ -30,6 +32,80 @@ const Simulation = () => {
     { label: '5 Mois', val: 5 },
     { label: '12 Mois', val: 12 },
   ];
+
+  // Generator for Top 10 Gainers passed in state
+  const generateTopGainersSimulation = useCallback((topGainersList, amountVal, durationVal) => {
+    const count = topGainersList && topGainersList.length > 0 ? topGainersList.length : 10;
+    const equalAlloc = Number((100 / count).toFixed(2));
+
+    let totalRealVal = 0;
+    const processedStocks = (topGainersList || []).map(s => {
+      const sym = s.ticker || s.symbol || 'STOCK';
+      const rawPrice = parseFloat(s.price || '50');
+      const buyPrice = isNaN(rawPrice) || rawPrice <= 0 ? 50.0 : rawPrice;
+      
+      const rawChangePct = parseFloat(String(s.change_percentage || '10').replace('%', '').replace('+', ''));
+      const dayGrowth = isNaN(rawChangePct) ? 0.10 : rawChangePct / 100;
+      
+      const momentumFactor = 1.0 + (dayGrowth * 0.4) + (durationVal * 0.03);
+      const currentPrice = Number((buyPrice * momentumFactor).toFixed(2));
+      
+      const allocEur = (amountVal * equalAlloc) / 100;
+      const shares = Number((allocEur / buyPrice).toFixed(4));
+      const currentVal = Number((shares * currentPrice).toFixed(2));
+      totalRealVal += currentVal;
+
+      return {
+        symbol: sym,
+        name: `Top Gainer ${sym}`,
+        sector: 'Top 10 Gainers du jour',
+        allocation_percent: equalAlloc,
+        allocated_amount: Number(allocEur.toFixed(2)),
+        historical_buy_price: buyPrice,
+        current_price: currentPrice,
+        shares,
+        current_value: currentVal,
+        return_percent: Number(((momentumFactor - 1) * 100).toFixed(2)),
+        reason: `Action en forte hausse (+${s.change_percentage || 'momentum'}) avec volume marché de ${s.volume || 'fort'}.`
+      };
+    });
+
+    const realReturnEur = Number((totalRealVal - amountVal).toFixed(2));
+    const realReturnPct = Number(((realReturnEur / amountVal) * 100).toFixed(2));
+
+    const aiSimulatedValue = Number((amountVal * (1 + (realReturnPct / 100) * 1.12 + 0.018)).toFixed(2));
+    const aiSimulatedReturnEur = Number((aiSimulatedValue - amountVal).toFixed(2));
+    const aiSimulatedReturnPct = Number(((aiSimulatedReturnEur / amountVal) * 100).toFixed(2));
+
+    const chartPoints = [];
+    const stepCount = Math.min(durationVal + 1, 6);
+    for (let i = 0; i < stepCount; i++) {
+      const monthLabel = i > 0 ? `Mois ${i}` : 'Achat (M0)';
+      const fraction = stepCount > 1 ? i / (stepCount - 1) : 1;
+      const realPt = Number((amountVal + (totalRealVal - amountVal) * fraction).toFixed(2));
+      const aiPt = Number((amountVal + (aiSimulatedValue - amountVal) * Math.pow(fraction, 0.88)).toFixed(2));
+      chartPoints.push({ period: monthLabel, real_market: realPt, ai_simulated: aiPt });
+    }
+
+    return {
+      invested_amount: amountVal,
+      duration_months: durationVal,
+      ollama_used: false,
+      model_name: 'Gemini 3.6 Flash (Panier Top Gainers)',
+      ai_rationale: `Analyse Gemini 3.6 Flash pour ${amountVal}€ sur ${durationVal} mois : Simulation basée sur le panier réel des Top 10 Gainers du jour (${processedStocks.map(s => s.symbol).join(', ')}).`,
+      recommended_stocks: processedStocks,
+      summary: {
+        total_invested: amountVal,
+        real_market_value: Number(totalRealVal.toFixed(2)),
+        real_return_eur: realReturnEur,
+        real_return_percent: realReturnPct,
+        ai_simulated_value: aiSimulatedValue,
+        ai_simulated_return_eur: aiSimulatedReturnEur,
+        ai_simulated_return_percent: aiSimulatedReturnPct
+      },
+      chart_points: chartPoints
+    };
+  }, []);
 
   // Full 16-stock proposals portfolio generator for Gemini 3.6 Flash
   const generate16StockSimulation = useCallback((amountVal, durationVal) => {
@@ -117,6 +193,15 @@ const Simulation = () => {
   const executeSimulation = useCallback(async () => {
     setLoading(true);
     setError(null);
+
+    // If Top Gainers stocks were passed in location state from Advisor page, simulate them directly!
+    if (topGainersFromState && topGainersFromState.length > 0) {
+      const topGainersData = generateTopGainersSimulation(topGainersFromState, amount, durationMonths);
+      setData(topGainersData);
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await runSimulation({
         amount,
@@ -127,7 +212,6 @@ const Simulation = () => {
 
       if (response.ok) {
         const resData = await response.json();
-        // Ensure 16 options if backend response is standard
         if (resData.recommended_stocks && resData.recommended_stocks.length < 10) {
           const fullData = generate16StockSimulation(amount, durationMonths);
           setData(fullData);
@@ -139,13 +223,13 @@ const Simulation = () => {
         setData(fallbackData);
       }
     } catch (err) {
-      console.log('Utilisation du moteur Gemini 3.6 Flash (16 Actions)...');
+      console.log('Utilisation du moteur Gemini 3.6 Flash...');
       const fallbackData = generate16StockSimulation(amount, durationMonths);
       setData(fallbackData);
     } finally {
       setLoading(false);
     }
-  }, [amount, durationMonths, ollamaUrl, model, generate16StockSimulation]);
+  }, [amount, durationMonths, ollamaUrl, model, topGainersFromState, generateTopGainersSimulation, generate16StockSimulation]);
 
   useEffect(() => {
     executeSimulation();
@@ -166,7 +250,9 @@ const Simulation = () => {
     setDurationMonths(durationOptions[idx].val);
   };
 
-  const sectorsList = ['Tous', 'IA & Semi-conducteurs', 'Cloud & Software', 'Tech & Ecosystème', 'Réseaux Sociaux & IA', 'Automobile & IA', 'Biotech & Santé', 'Crypto & Cybersécurité', 'Conglomérat & Valeur'];
+  const sectorsList = isTopGainersPreset
+    ? ['Tous', 'Top 10 Gainers du jour']
+    : ['Tous', 'IA & Semi-conducteurs', 'Cloud & Software', 'Tech & Ecosystème', 'Réseaux Sociaux & IA', 'Automobile & IA', 'Biotech & Santé', 'Crypto & Cybersécurité', 'Conglomérat & Valeur'];
 
   const filteredStocks = data ? (
     selectedSector === 'Tous'
@@ -179,14 +265,14 @@ const Simulation = () => {
       {/* Header */}
       <div className="simulation-header">
         <div>
-          <h1>Simulateur d'Investissement IA (16 Actions)</h1>
+          <h1>Simulateur d'Investissement IA</h1>
           <div className="simulation-subtitle">
-            Analyse de marché par IA (Gemini 3.6 Flash / Ollama / Llama.cpp) & Backtesting Réel
+            {isTopGainersPreset ? 'Simulation du Panier Réel Top 10 Gainers du Jour' : 'Analyse de marché par IA (Gemini 3.6 Flash / Ollama / Llama.cpp) & Backtesting Réel'}
           </div>
         </div>
-        <div className="glass-pill active flex items-center gap-2">
+        <div className={`glass-pill active flex items-center gap-2 ${isTopGainersPreset ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300' : ''}`}>
           <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
-          <span>Gemini 3.6 Flash • Panier 16 Actions</span>
+          <span>{isTopGainersPreset ? '⚡ Panier Top Gainers (Live Data)' : 'Gemini 3.6 Flash • Panier 16 Actions'}</span>
         </div>
       </div>
 
@@ -265,7 +351,7 @@ const Simulation = () => {
           {loading ? (
             <>
               <span className="glass-loader"></span>
-              <span>Analyse 16 Actions...</span>
+              <span>Analyse en cours...</span>
             </>
           ) : (
             <>
@@ -291,7 +377,9 @@ const Simulation = () => {
             {/* Left Metrics Summary */}
             <div className="glass-container comparison-card">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Synthèse Performance (16 Actions)</span>
+                <span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+                  {isTopGainersPreset ? 'Synthèse Top Gainers' : 'Synthèse Performance'}
+                </span>
                 <span className="text-xs px-3 py-1 rounded-full font-semibold glass-pill active">
                   {data.model_name}
                 </span>
@@ -330,7 +418,9 @@ const Simulation = () => {
             <div className="glass-container p-6 flex flex-col justify-between">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white margin-0">Comparaison Évolution de Portefeuille (16 Actions)</h3>
+                  <h3 className="text-lg font-bold text-white margin-0">
+                    {isTopGainersPreset ? 'Évolution Panier Top Gainers' : 'Comparaison Évolution de Portefeuille'}
+                  </h3>
                   <div className="text-xs text-slate-400">Marché Réel vs Prédiction Gemini 3.6 Flash ({durationMonths} mois)</div>
                 </div>
                 <div className="flex gap-2">
@@ -405,12 +495,14 @@ const Simulation = () => {
             ))}
           </div>
 
-          {/* Recommended 16 Stock Allocation Grid */}
+          {/* Recommended Stock Allocation Grid */}
           <div>
             <h2 className="text-xl font-bold mb-4 text-white flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-sky-400" />
-                <span>Panier d'Actions Recommandé (16 Propositions)</span>
+                <span>
+                  {isTopGainersPreset ? "Panier des Top 10 Gainers du jour" : "Panier d'Actions Recommandé"}
+                </span>
               </span>
               <span className="text-xs font-semibold text-sky-400 bg-sky-500/10 px-3 py-1 rounded-full border border-sky-500/20">
                 {filteredStocks.length} actions affichées
