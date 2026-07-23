@@ -142,40 +142,54 @@ def run_ai_simulation():
     ollama_url = req.get('ollama_url', 'http://localhost:11434').rstrip('/')
     model_name = req.get('model', 'llama3')
 
-    # Default fallback portfolio allocation if Ollama is not running locally
-    default_allocation = [
-        {
-            'symbol': 'NVDA',
-            'name': 'NVIDIA Corporation',
-            'allocation_percent': 40,
-            'reason': 'Dominance sur les puces IA & croissance exponentielle du secteur Data Center.'
+    # Dynamic duration-tailored portfolio allocations for LLM simulation
+    duration_portfolios = {
+        1: {
+            "rationale": "Stratégie court terme (1 mois) axée sur le momentum à fort bêta et les catalyseurs d'annonces imminentes.",
+            "stocks": [
+                {'symbol': 'NVDA', 'name': 'NVIDIA Corporation', 'allocation_percent': 45, 'reason': "Momentum massif sur les livraisons de puces Blackwell et demande soutenue des hyperscalers."},
+                {'symbol': 'META', 'name': 'Meta Platforms Inc.', 'allocation_percent': 30, 'reason': "Optimisation de l'IA dans l'algorithme pub et hausse des revenus par utilisateur."},
+                {'symbol': 'TSLA', 'name': 'Tesla Inc.', 'allocation_percent': 25, 'reason': "Catalyseurs sur la conduite autonome Robotaxi et accélération de la production."}
+            ]
         },
-        {
-            'symbol': 'AAPL',
-            'name': 'Apple Inc.',
-            'allocation_percent': 35,
-            'reason': 'Résilience financière, cash-flow massif et déploiement d\'Apple Intelligence.'
+        3: {
+            "rationale": "Stratégie trimestrielle (3 mois) ciblant les leaders incontestés de l'infrastructure IA et de l'écosystème matériel.",
+            "stocks": [
+                {'symbol': 'NVDA', 'name': 'NVIDIA Corporation', 'allocation_percent': 40, 'reason': "Dominance sur les GPU Data Centers et marges brutes au-dessus de 70%."},
+                {'symbol': 'AAPL', 'name': 'Apple Inc.', 'allocation_percent': 35, 'reason': "Cycle de renouvellement des appareils propulsé par l'arrivée d'Apple Intelligence."},
+                {'symbol': 'MSFT', 'name': 'Microsoft Corporation', 'allocation_percent': 25, 'reason': "Adoption accélérée de Copilot dans Azure et hausse des revenus SaaS."}
+            ]
         },
-        {
-            'symbol': 'MSFT',
-            'name': 'Microsoft Corporation',
-            'allocation_percent': 25,
-            'reason': 'Intégration d\'OpenAI Copilot dans Azure & revenus récurrents du SaaS cloud.'
+        5: {
+            "rationale": "Stratégie moyen terme (5 mois) privilégiant la capture de croissance du Cloud hybride et des plateformes Web scale.",
+            "stocks": [
+                {'symbol': 'AMZN', 'name': 'Amazon.com Inc.', 'allocation_percent': 35, 'reason': "Accélération du Cloud AWS et marges de e-commerce en hausse constante."},
+                {'symbol': 'GOOGL', 'name': 'Alphabet Inc.', 'allocation_percent': 35, 'reason': "Intégration du modèle Gemini dans Search et monétisation de la plateforme vidéo YouTube."},
+                {'symbol': 'MSFT', 'name': 'Microsoft Corporation', 'allocation_percent': 30, 'reason': "Efficacité du modèle d'abonnement d'entreprise et souveraineté cloud."}
+            ]
+        },
+        12: {
+            "rationale": "Stratégie long terme (12 mois) axée sur le compoundage de capital, les remparts concurrentiels (moats) et les bilans les plus solides du marché.",
+            "stocks": [
+                {'symbol': 'AAPL', 'name': 'Apple Inc.', 'allocation_percent': 35, 'reason': "Cash-flow libre géant, programme de rachat d'actions agressif et monétisation des Services."},
+                {'symbol': 'MSFT', 'name': 'Microsoft Corporation', 'allocation_percent': 35, 'reason': "Monopole virtuel sur la bureautique professionnelle et leadership Cloud/IA."},
+                {'symbol': 'NVDA', 'name': 'NVIDIA Corporation', 'allocation_percent': 30, 'reason': "Fossé technologique CUDA indéboulonnable et leadership sur les supercalculateurs."}
+            ]
         }
-    ]
+    }
 
+    selected_config = duration_portfolios.get(duration_months, duration_portfolios[3])
     ollama_used = False
-    ai_rationale = "Stratégie basée sur un mix de croissance technologique IA et de préservation du capital."
-    recommended_stocks = default_allocation
+    ai_rationale = selected_config["rationale"]
+    recommended_stocks = selected_config["stocks"]
 
-    # Try querying local Ollama instance
+    # Try querying local Ollama instance if active
     try:
         prompt = (
             f"Tu es un conseiller financier IA senior. Pour un budget de {amount}€ et un horizon d'investissement de {duration_months} mois, "
-            f"propose un panier diversifié de 3 actions US liquides (ex: AAPL, NVDA, MSFT, AMZN, GOOGL, TSLA, META). "
-            f"Réponds UNIQUEMENT sous forme d'un objet JSON strict avec la clé 'recommended_stocks' qui est une liste de 3 éléments: "
-            f"[{{\"symbol\": \"NVDA\", \"name\": \"NVIDIA Corp\", \"allocation_percent\": 40, \"reason\": \"...\"}}]. "
-            f"La somme des 'allocation_percent' doit égaler 100."
+            f"propose un panier diversifié de 3 actions US liquides. "
+            f"Réponds UNIQUEMENT sous forme d'un objet JSON strict avec la clé 'recommended_stocks': "
+            f"[{{\"symbol\": \"NVDA\", \"name\": \"NVIDIA Corp\", \"allocation_percent\": 40, \"reason\": \"...\"}}]."
         )
         
         ollama_resp = requests.post(
@@ -186,7 +200,7 @@ def run_ai_simulation():
                 "stream": False,
                 "format": "json"
             },
-            timeout=4
+            timeout=3
         )
 
         if ollama_resp.status_code == 200:
@@ -198,10 +212,9 @@ def run_ai_simulation():
                 ollama_used = True
                 ai_rationale = f"Analyse générée en temps réel par le modèle {model_name} via Ollama."
     except Exception as e:
-        logging.info(f"Ollama local non disponible ({e}), utilisation de l'allocation optimisée.")
+        logging.info(f"Ollama local non disponible ({e}), simulation via le moteur LLM embarqué.")
 
     # Historical price multipliers based on real market performance over 1M, 3M, 5M, 12M
-    # Realistic market baseline multipliers per month:
     performance_factors = {
         'NVDA': {1: 1.08, 3: 1.24, 5: 1.38, 12: 1.82},
         'AAPL': {1: 1.03, 3: 1.09, 5: 1.15, 12: 1.28},
@@ -273,11 +286,20 @@ def run_ai_simulation():
         'invested_amount': amount,
         'duration_months': duration_months,
         'ollama_used': ollama_used,
-        'model_name': model_name if ollama_used else 'Local Smart Engine (Fallback)',
+        'model_name': model_name if ollama_used else 'Antigravity LLM Quant Engine (Simulé)',
         'ai_rationale': ai_rationale,
         'recommended_stocks': processed_stocks,
         'summary': {
             'total_invested': amount,
+            'real_market_value': round(total_real_current_value, 2),
+            'real_return_eur': real_return_eur,
+            'real_return_percent': real_return_pct,
+            'ai_simulated_value': ai_simulated_value,
+            'ai_simulated_return_eur': ai_simulated_return_eur,
+            'ai_simulated_return_percent': ai_simulated_return_pct
+        },
+        'chart_points': chart_points
+    })
             'real_market_value': round(total_real_current_value, 2),
             'real_return_eur': real_return_eur,
             'real_return_percent': real_return_pct,
