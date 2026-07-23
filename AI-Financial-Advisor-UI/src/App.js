@@ -9,6 +9,7 @@ import Portfolio from './webpages/Portfolio';
 import Dashboard from './webpages/Dashboard';
 import Account from './webpages/Account';
 import InvestBrainTester from './webpages/InvestBrainTester';
+import Simulation from './webpages/Simulation';
 import LandingPage from './webpages/LandingPage';
 import LoginPage from './webpages/LoginPage';
 import SignupPage from './webpages/SignUpPage';
@@ -31,6 +32,7 @@ function App() {
               {isAuthenticated ? (
                 <>
                   <Route path="/advisor" element={<MainContainer />} />
+                  <Route path="/simulation" element={<Simulation />} />
                   <Route path="/stocks/:symbol" element={<StockDetails />} />
                   <Route path="/portfolio" element={<Portfolio />} />
                   <Route path="/dashboard" element={<Dashboard />} />
@@ -40,6 +42,7 @@ function App() {
               ) : (
                 <>
                   <Route path="/advisor" element={<Navigate to="/login" />} />
+                  <Route path="/simulation" element={<Navigate to="/login" />} />
                   <Route path="/stocks/:symbol" element={<Navigate to="/login" />} />
                   <Route path="/portfolio" element={<Navigate to="/login" />} />
                   <Route path="/dashboard" element={<Navigate to="/login" />} />

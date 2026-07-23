@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
-import { Home, PieChart, BarChart2, User, LogOut, Target } from 'lucide-react';
+import { Home, PieChart, BarChart2, User, LogOut, Target, Cpu } from 'lucide-react';
 import { AuthContext } from '../AuthContext';
 
 const Sidebar = () => {
@@ -22,6 +22,7 @@ const Sidebar = () => {
 
             <nav className="flex-1 space-y-2">
                 <SidebarItem to="/advisor" icon={<Home className="w-6 h-6" />} label="Advisor" />
+                <SidebarItem to="/simulation" icon={<Cpu className="w-6 h-6" />} label="Simulateur IA" />
                 <SidebarItem to="/portfolio" icon={<PieChart className="w-6 h-6" />} label="Portfolio" />
                 <SidebarItem to="/dashboard" icon={<BarChart2 className="w-6 h-6" />} label="Dashboard" />
                 <SidebarItem to="/account" icon={<User className="w-6 h-6" />} label="Account" />
