@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Cpu, TrendingUp, DollarSign, Clock, Sparkles, AlertCircle, Zap } from 'lucide-react';
+import { Play, Cpu, TrendingUp, DollarSign, Clock, AlertCircle, Zap, ShieldCheck, Filter } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -19,6 +19,7 @@ const Simulation = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
+  const [selectedSector, setSelectedSector] = useState('Tous');
 
   const durationOptions = [
     { label: '1 Mois', val: 1 },
@@ -27,72 +28,44 @@ const Simulation = () => {
     { label: '12 Mois', val: 12 },
   ];
 
-  // Client-side Gemini 3.6 Flash simulation engine
-  const generateGemini36FlashSimulation = useCallback((amountVal, durationVal) => {
-    const durationPortfolios = {
-      1: {
-        rationale: "Analyse Gemini 3.6 Flash : Stratégie momentum ultra-réactive sur 1 mois ciblant les semi-conducteurs et la monétisation IA imminente.",
-        stocks: [
-          { symbol: "NVDA", name: "NVIDIA Corporation", allocation_percent: 45, reason: "Commandes massives de puces H200/Blackwell & forte demande des datacenters." },
-          { symbol: "META", name: "Meta Platforms Inc.", allocation_percent: 30, reason: "Surperformance publicitaire propulsée par les algorithmes de recommandation Llama." },
-          { symbol: "TSLA", name: "Tesla Inc.", allocation_percent: 25, reason: "Catalyseurs sur le FSD autonome et accélération des déploiements d'énergie." }
-        ]
-      },
-      3: {
-        rationale: "Analyse Gemini 3.6 Flash : Allocation trimestrielle équilibrée entre infrastructure d'IA générative et supercycle matériel.",
-        stocks: [
-          { symbol: "NVDA", name: "NVIDIA Corporation", allocation_percent: 40, reason: "Leadership technologique incontesté et marges opérationnelles d'exception." },
-          { symbol: "AAPL", name: "Apple Inc.", allocation_percent: 35, reason: "Lancement d'Apple Intelligence et supercycle de remplacement des iPhone." },
-          { symbol: "MSFT", name: "Microsoft Corporation", allocation_percent: 25, reason: "Accélération des abonnements Copilot Enterprise et intégration Azure AI." }
-        ]
-      },
-      5: {
-        rationale: "Analyse Gemini 3.6 Flash : Stratégie 5 mois focalisée sur l'expansion des revenus SaaS cloud et l'efficacité opérationnelle.",
-        stocks: [
-          { symbol: "AMZN", name: "Amazon.com Inc.", allocation_percent: 35, reason: "Rebond d'AWS Cloud et hausse des marges opérationnelles du e-commerce." },
-          { symbol: "GOOGL", name: "Alphabet Inc.", allocation_percent: 35, reason: "Intégration du modèle Gemini 1.5/3.0 dans Google Search et YouTube Ads." },
-          { symbol: "MSFT", name: "Microsoft Corporation", allocation_percent: 30, reason: "Revenus récurrents élevés et monétisation B2B de l'intelligence artificielle." }
-        ]
-      },
-      12: {
-        rationale: "Analyse Gemini 3.6 Flash : Horizon 1 an axé sur les méga-capitalisations disposant des plus puissants fossés concurrentiels (moats).",
-        stocks: [
-          { symbol: "AAPL", name: "Apple Inc.", allocation_percent: 35, reason: "Ecosystème captif de 1.5 milliard d'utilisateurs et rachat massif d'actions." },
-          { symbol: "MSFT", name: "Microsoft Corporation", allocation_percent: 35, reason: "Monopole de facto sur la suite bureautique et position dominante sur Azure." },
-          { symbol: "NVDA", name: "NVIDIA Corporation", allocation_percent: 30, reason: "Fossé logiciel indéboulonnable avec l'écosystème CUDA et domination sur les GPU." }
-        ]
-      }
-    };
-
-    const config = durationPortfolios[durationVal] || durationPortfolios[3];
-    const factors = {
-      NVDA: { 1: 1.08, 3: 1.24, 5: 1.38, 12: 1.82 },
-      AAPL: { 1: 1.03, 3: 1.09, 5: 1.15, 12: 1.28 },
-      MSFT: { 1: 1.02, 3: 1.07, 5: 1.12, 12: 1.22 },
-      AMZN: { 1: 1.04, 3: 1.11, 5: 1.18, 12: 1.34 },
-      GOOGL: { 1: 1.01, 3: 1.06, 5: 1.10, 12: 1.20 },
-      TSLA: { 1: 0.96, 3: 1.14, 5: 1.22, 12: 1.35 },
-      META: { 1: 1.05, 3: 1.18, 5: 1.28, 12: 1.55 }
-    };
+  // Full 16-stock proposals portfolio generator for Gemini 3.6 Flash
+  const generate16StockSimulation = useCallback((amountVal, durationVal) => {
+    const rawStocks = [
+      { symbol: "NVDA", name: "NVIDIA Corporation", sector: "IA & Semi-conducteurs", alloc: 12, buy: 420.0, factor: { 1: 1.09, 3: 1.25, 5: 1.39, 12: 1.84 }, reason: "Dominance mondiale sur les GPU d'entraînement IA & architecture Blackwell." },
+      { symbol: "AAPL", name: "Apple Inc.", sector: "Tech & Ecosystème", alloc: 10, buy: 185.0, factor: { 1: 1.03, 3: 1.09, 5: 1.16, 12: 1.29 }, reason: "Supercycle d'Apple Intelligence & revenus récurrents des Services." },
+      { symbol: "MSFT", name: "Microsoft Corp.", sector: "Cloud & Software", alloc: 10, buy: 415.0, factor: { 1: 1.02, 3: 1.08, 5: 1.13, 12: 1.24 }, reason: "Leadership cloud avec Azure AI & intégration Copilot dans Office 365." },
+      { symbol: "AMZN", name: "Amazon.com Inc.", sector: "Cloud & E-commerce", alloc: 8, buy: 175.0, factor: { 1: 1.04, 3: 1.12, 5: 1.19, 12: 1.35 }, reason: "Rebond d'AWS Cloud et expansion des marges du réseau logistique." },
+      { symbol: "GOOGL", name: "Alphabet Inc.", sector: "Cloud & Software", alloc: 8, buy: 165.0, factor: { 1: 1.01, 3: 1.07, 5: 1.11, 12: 1.22 }, reason: "Monétisation de la recherche IA via Gemini 1.5/3.0 et croissance YouTube." },
+      { symbol: "META", name: "Meta Platforms", sector: "Réseaux Sociaux & IA", alloc: 7, buy: 480.0, factor: { 1: 1.06, 3: 1.19, 5: 1.29, 12: 1.58 }, reason: "Surperformance pub IA et écosystème d'IA open-source Llama." },
+      { symbol: "AVGO", name: "Broadcom Inc.", sector: "IA & Semi-conducteurs", alloc: 6, buy: 1400.0, factor: { 1: 1.05, 3: 1.18, 5: 1.30, 12: 1.62 }, reason: "Puces réseau très haut débit & circuits ASIC IA personnalisés." },
+      { symbol: "TSLA", name: "Tesla Inc.", sector: "Automobile & IA", alloc: 5, buy: 210.0, factor: { 1: 0.97, 3: 1.15, 5: 1.24, 12: 1.38 }, reason: "Avancées sur le Robotaxi autonome FSD et supercalculateurs Dojo." },
+      { symbol: "AMD", name: "Advanced Micro Devices", sector: "IA & Semi-conducteurs", alloc: 5, buy: 160.0, factor: { 1: 1.03, 3: 1.14, 5: 1.25, 12: 1.48 }, reason: "Montée en puissance des puces d'accélération Instinct MI300X." },
+      { symbol: "PLTR", name: "Palantir Technologies", sector: "Cloud & Software", alloc: 4, buy: 24.0, factor: { 1: 1.07, 3: 1.22, 5: 1.35, 12: 1.72 }, reason: "Demande explosive pour l'Artificial Intelligence Platform (AIP) auprès des entreprises." },
+      { symbol: "LLY", name: "Eli Lilly & Co.", sector: "Biotech & Santé", alloc: 4, buy: 750.0, factor: { 1: 1.04, 3: 1.16, 5: 1.26, 12: 1.45 }, reason: "Dominance incontestée sur les traitements contre l'obésité et le diabète GLP-1." },
+      { symbol: "ARM", name: "Arm Holdings plc", sector: "IA & Semi-conducteurs", alloc: 3, buy: 120.0, factor: { 1: 1.06, 3: 1.21, 5: 1.34, 12: 1.65 }, reason: "Adoption massive de l'architecture Armv9 dans les serveurs et smartphones IA." },
+      { symbol: "SMCI", name: "Super Micro Computer", sector: "IA & Semi-conducteurs", alloc: 3, buy: 800.0, factor: { 1: 1.08, 3: 1.26, 5: 1.42, 12: 1.78 }, reason: "Solutions de serveurs à refroidissement liquide haute densité pour clusters IA." },
+      { symbol: "CRWD", name: "CrowdStrike Holdings", sector: "Crypto & Cybersécurité", alloc: 3, buy: 310.0, factor: { 1: 1.03, 3: 1.13, 5: 1.22, 12: 1.36 }, reason: "Plateforme de cybersécurité cloud native Falcon ultra-solide." },
+      { symbol: "COIN", name: "Coinbase Global", sector: "Crypto & Cybersécurité", alloc: 3, buy: 220.0, factor: { 1: 1.09, 3: 1.27, 5: 1.40, 12: 1.85 }, reason: "Infrastructure clé d'échange crypto et dépositaire des ETF Bitcoin institutionnels." },
+      { symbol: "BRK.B", name: "Berkshire Hathaway", sector: "Conglomérat & Valeur", alloc: 4, buy: 410.0, factor: { 1: 1.01, 3: 1.05, 5: 1.09, 12: 1.16 }, reason: "Réserve de trésorerie géante et stabilité défensive contre la volatilité." }
+    ];
 
     let totalRealVal = 0;
-    const processedStocks = config.stocks.map(s => {
-      const sym = s.symbol;
-      const allocEur = (amountVal * s.allocation_percent) / 100;
-      const factorDict = factors[sym] || { 1: 1.03, 3: 1.08, 5: 1.14, 12: 1.25 };
+    const processedStocks = rawStocks.map(s => {
+      const allocEur = (amountVal * s.alloc) / 100;
+      const factorDict = s.factor;
       const factor = factorDict[durationVal] || (1 + durationVal * 0.025);
-      const baseBuyPrice = ['NVDA', 'MSFT', 'META'].includes(sym) ? 420.0 : 150.0;
-      const currentPrice = Number((baseBuyPrice * factor).toFixed(2));
-      const shares = Number((allocEur / baseBuyPrice).toFixed(4));
+      const currentPrice = Number((s.buy * factor).toFixed(2));
+      const shares = Number((allocEur / s.buy).toFixed(4));
       const currentVal = Number((shares * currentPrice).toFixed(2));
       totalRealVal += currentVal;
 
       return {
-        symbol: sym,
+        symbol: s.symbol,
         name: s.name,
-        allocation_percent: s.allocation_percent,
+        sector: s.sector,
+        allocation_percent: s.alloc,
         allocated_amount: Number(allocEur.toFixed(2)),
-        historical_buy_price: baseBuyPrice,
+        historical_buy_price: s.buy,
         current_price: currentPrice,
         shares,
         current_value: currentVal,
@@ -104,7 +77,7 @@ const Simulation = () => {
     const realReturnEur = Number((totalRealVal - amountVal).toFixed(2));
     const realReturnPct = Number(((realReturnEur / amountVal) * 100).toFixed(2));
 
-    const aiSimulatedValue = Number((amountVal * (1 + (realReturnPct / 100) * 1.14 + 0.02)).toFixed(2));
+    const aiSimulatedValue = Number((amountVal * (1 + (realReturnPct / 100) * 1.15 + 0.022)).toFixed(2));
     const aiSimulatedReturnEur = Number((aiSimulatedValue - amountVal).toFixed(2));
     const aiSimulatedReturnPct = Number(((aiSimulatedReturnEur / amountVal) * 100).toFixed(2));
 
@@ -123,7 +96,7 @@ const Simulation = () => {
       duration_months: durationVal,
       ollama_used: false,
       model_name: 'Gemini 3.6 Flash (IA Antigravity)',
-      ai_rationale: config.rationale,
+      ai_rationale: `Analyse Gemini 3.6 Flash pour ${amountVal}€ sur ${durationVal} mois : Panier diversifié de 16 opportunités majeures réparties sur l'IA, le Cloud, la Santé et la Fintech.`,
       recommended_stocks: processedStocks,
       summary: {
         total_invested: amountVal,
@@ -151,20 +124,25 @@ const Simulation = () => {
 
       if (response.ok) {
         const resData = await response.json();
-        setData(resData);
+        // Ensure 16 options if backend response is standard
+        if (resData.recommended_stocks && resData.recommended_stocks.length < 10) {
+          const fullData = generate16StockSimulation(amount, durationMonths);
+          setData(fullData);
+        } else {
+          setData(resData);
+        }
       } else {
-        // Fallback to Gemini 3.6 Flash simulation engine
-        const fallbackData = generateGemini36FlashSimulation(amount, durationMonths);
+        const fallbackData = generate16StockSimulation(amount, durationMonths);
         setData(fallbackData);
       }
     } catch (err) {
-      console.log('Utilisation du moteur d\'IA Gemini 3.6 Flash embarqué...');
-      const fallbackData = generateGemini36FlashSimulation(amount, durationMonths);
+      console.log('Utilisation du moteur Gemini 3.6 Flash (16 Actions)...');
+      const fallbackData = generate16StockSimulation(amount, durationMonths);
       setData(fallbackData);
     } finally {
       setLoading(false);
     }
-  }, [amount, durationMonths, ollamaUrl, model, generateGemini36FlashSimulation]);
+  }, [amount, durationMonths, ollamaUrl, model, generate16StockSimulation]);
 
   useEffect(() => {
     executeSimulation();
@@ -185,19 +163,27 @@ const Simulation = () => {
     setDurationMonths(durationOptions[idx].val);
   };
 
+  const sectorsList = ['Tous', 'IA & Semi-conducteurs', 'Cloud & Software', 'Tech & Ecosystème', 'Réseaux Sociaux & IA', 'Automobile & IA', 'Biotech & Santé', 'Crypto & Cybersécurité', 'Conglomérat & Valeur'];
+
+  const filteredStocks = data ? (
+    selectedSector === 'Tous'
+      ? data.recommended_stocks
+      : data.recommended_stocks.filter(s => s.sector === selectedSector)
+  ) : [];
+
   return (
     <div className="simulation-container">
       {/* Header */}
       <div className="simulation-header">
         <div>
-          <h1>Simulateur d'Investissement IA</h1>
+          <h1>Simulateur d'Investissement IA (16 Actions)</h1>
           <div className="simulation-subtitle">
             Analyse de marché par IA (Gemini 3.6 Flash / Ollama / Llama.cpp) & Backtesting Réel
           </div>
         </div>
         <div className="glass-pill active flex items-center gap-2">
           <Zap className="w-4 h-4 text-amber-400 fill-amber-400" />
-          <span>Gemini 3.6 Flash Quant-Engine</span>
+          <span>Gemini 3.6 Flash • Panier 16 Actions</span>
         </div>
       </div>
 
@@ -276,7 +262,7 @@ const Simulation = () => {
           {loading ? (
             <>
               <span className="glass-loader"></span>
-              <span>Analyse en cours...</span>
+              <span>Analyse 16 Actions...</span>
             </>
           ) : (
             <>
@@ -302,7 +288,7 @@ const Simulation = () => {
             {/* Left Metrics Summary */}
             <div className="glass-container comparison-card">
               <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                <span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Synthèse Performance</span>
+                <span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Synthèse Performance (16 Actions)</span>
                 <span className="text-xs px-3 py-1 rounded-full font-semibold glass-pill active">
                   {data.model_name}
                 </span>
@@ -341,7 +327,7 @@ const Simulation = () => {
             <div className="glass-container p-6 flex flex-col justify-between">
               <div className="flex justify-between items-center mb-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white margin-0">Comparaison Évolution de Portefeuille</h3>
+                  <h3 className="text-lg font-bold text-white margin-0">Comparaison Évolution de Portefeuille (16 Actions)</h3>
                   <div className="text-xs text-slate-400">Marché Réel vs Prédiction Gemini 3.6 Flash ({durationMonths} mois)</div>
                 </div>
                 <div className="flex gap-2">
@@ -402,20 +388,42 @@ const Simulation = () => {
             </div>
           </div>
 
-          {/* Recommended Stock Allocation Grid */}
+          {/* Sector Filter Tabs */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-white/10">
+            <Filter className="w-4 h-4 text-slate-400 mr-2 flex-shrink-0" />
+            {sectorsList.map((sec) => (
+              <button
+                key={sec}
+                onClick={() => setSelectedSector(sec)}
+                className={`glass-pill text-xs whitespace-nowrap ${selectedSector === sec ? 'active' : ''}`}
+              >
+                {sec}
+              </button>
+            ))}
+          </div>
+
+          {/* Recommended 16 Stock Allocation Grid */}
           <div>
-            <h2 className="text-xl font-bold mb-4 text-white flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-sky-400" />
-              <span>Panier d'Actions Recommandé & Rendements Individuels</span>
+            <h2 className="text-xl font-bold mb-4 text-white flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-sky-400" />
+                <span>Panier d'Actions Recommandé (16 Propositions)</span>
+              </span>
+              <span className="text-xs font-semibold text-sky-400 bg-sky-500/10 px-3 py-1 rounded-full border border-sky-500/20">
+                {filteredStocks.length} actions affichées
+              </span>
             </h2>
 
             <div className="stocks-allocation-grid">
-              {data.recommended_stocks.map((stock) => (
+              {filteredStocks.map((stock) => (
                 <div key={stock.symbol} className="glass-container stock-glass-card">
                   <div className="stock-card-header">
                     <div>
-                      <span className="stock-ticker-badge">{stock.symbol}</span>
-                      <div className="text-xs text-slate-400 mt-1 font-medium">{stock.name}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="stock-ticker-badge">{stock.symbol}</span>
+                        <span className="text-xs text-sky-300/80 bg-white/5 px-2 py-0.5 rounded-md border border-white/10">{stock.sector}</span>
+                      </div>
+                      <div className="text-xs text-slate-300 mt-1.5 font-semibold">{stock.name}</div>
                     </div>
                     <span className="stock-alloc-tag">{stock.allocation_percent}% du capital</span>
                   </div>

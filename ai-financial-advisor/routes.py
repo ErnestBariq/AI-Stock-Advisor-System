@@ -142,46 +142,28 @@ def run_ai_simulation():
     ollama_url = req.get('ollama_url', 'http://localhost:11434').rstrip('/')
     model_name = req.get('model', 'llama3')
 
-    # Dynamic duration-tailored portfolio allocations for LLM simulation
-    duration_portfolios = {
-        1: {
-            "rationale": "Stratégie court terme (1 mois) axée sur le momentum à fort bêta et les catalyseurs d'annonces imminentes.",
-            "stocks": [
-                {'symbol': 'NVDA', 'name': 'NVIDIA Corporation', 'allocation_percent': 45, 'reason': "Momentum massif sur les livraisons de puces Blackwell et demande soutenue des hyperscalers."},
-                {'symbol': 'META', 'name': 'Meta Platforms Inc.', 'allocation_percent': 30, 'reason': "Optimisation de l'IA dans l'algorithme pub et hausse des revenus par utilisateur."},
-                {'symbol': 'TSLA', 'name': 'Tesla Inc.', 'allocation_percent': 25, 'reason': "Catalyseurs sur la conduite autonome Robotaxi et accélération de la production."}
-            ]
-        },
-        3: {
-            "rationale": "Stratégie trimestrielle (3 mois) ciblant les leaders incontestés de l'infrastructure IA et de l'écosystème matériel.",
-            "stocks": [
-                {'symbol': 'NVDA', 'name': 'NVIDIA Corporation', 'allocation_percent': 40, 'reason': "Dominance sur les GPU Data Centers et marges brutes au-dessus de 70%."},
-                {'symbol': 'AAPL', 'name': 'Apple Inc.', 'allocation_percent': 35, 'reason': "Cycle de renouvellement des appareils propulsé par l'arrivée d'Apple Intelligence."},
-                {'symbol': 'MSFT', 'name': 'Microsoft Corporation', 'allocation_percent': 25, 'reason': "Adoption accélérée de Copilot dans Azure et hausse des revenus SaaS."}
-            ]
-        },
-        5: {
-            "rationale": "Stratégie moyen terme (5 mois) privilégiant la capture de croissance du Cloud hybride et des plateformes Web scale.",
-            "stocks": [
-                {'symbol': 'AMZN', 'name': 'Amazon.com Inc.', 'allocation_percent': 35, 'reason': "Accélération du Cloud AWS et marges de e-commerce en hausse constante."},
-                {'symbol': 'GOOGL', 'name': 'Alphabet Inc.', 'allocation_percent': 35, 'reason': "Intégration du modèle Gemini dans Search et monétisation de la plateforme vidéo YouTube."},
-                {'symbol': 'MSFT', 'name': 'Microsoft Corporation', 'allocation_percent': 30, 'reason': "Efficacité du modèle d'abonnement d'entreprise et souveraineté cloud."}
-            ]
-        },
-        12: {
-            "rationale": "Stratégie long terme (12 mois) axée sur le compoundage de capital, les remparts concurrentiels (moats) et les bilans les plus solides du marché.",
-            "stocks": [
-                {'symbol': 'AAPL', 'name': 'Apple Inc.', 'allocation_percent': 35, 'reason': "Cash-flow libre géant, programme de rachat d'actions agressif et monétisation des Services."},
-                {'symbol': 'MSFT', 'name': 'Microsoft Corporation', 'allocation_percent': 35, 'reason': "Monopole virtuel sur la bureautique professionnelle et leadership Cloud/IA."},
-                {'symbol': 'NVDA', 'name': 'NVIDIA Corporation', 'allocation_percent': 30, 'reason': "Fossé technologique CUDA indéboulonnable et leadership sur les supercalculateurs."}
-            ]
-        }
-    }
+    raw_stocks_16 = [
+        {'symbol': "NVDA", 'name': "NVIDIA Corporation", 'sector': "IA & Semi-conducteurs", 'allocation_percent': 12, 'buy': 420.0, 'reason': "Dominance mondiale sur les GPU d'entraînement IA & architecture Blackwell."},
+        {'symbol': "AAPL", 'name': "Apple Inc.", 'sector': "Tech & Ecosystème", 'allocation_percent': 10, 'buy': 185.0, 'reason': "Supercycle d'Apple Intelligence & revenus récurrents des Services."},
+        {'symbol': "MSFT", 'name': "Microsoft Corp.", 'sector': "Cloud & Software", 'allocation_percent': 10, 'buy': 415.0, 'reason': "Leadership cloud avec Azure AI & intégration Copilot dans Office 365."},
+        {'symbol': "AMZN", 'name': "Amazon.com Inc.", 'sector': "Cloud & E-commerce", 'allocation_percent': 8, 'buy': 175.0, 'reason': "Rebond d'AWS Cloud et expansion des marges du réseau logistique."},
+        {'symbol': "GOOGL", 'name': "Alphabet Inc.", 'sector': "Cloud & Software", 'allocation_percent': 8, 'buy': 165.0, 'reason': "Monétisation de la recherche IA via Gemini 1.5/3.0 et croissance YouTube."},
+        {'symbol': "META", 'name': "Meta Platforms", 'sector': "Réseaux Sociaux & IA", 'allocation_percent': 7, 'buy': 480.0, 'reason': "Surperformance pub IA et écosystème d'IA open-source Llama."},
+        {'symbol': "AVGO", 'name': "Broadcom Inc.", 'sector': "IA & Semi-conducteurs", 'allocation_percent': 6, 'buy': 1400.0, 'reason': "Puces réseau très haut débit & circuits ASIC IA personnalisés."},
+        {'symbol': "TSLA", 'name': "Tesla Inc.", 'sector': "Automobile & IA", 'allocation_percent': 5, 'buy': 210.0, 'reason': "Avancées sur le Robotaxi autonome FSD et supercalculateurs Dojo."},
+        {'symbol': "AMD", 'name': "Advanced Micro Devices", 'sector': "IA & Semi-conducteurs", 'allocation_percent': 5, 'buy': 160.0, 'reason': "Montée en puissance des puces d'accélération Instinct MI300X."},
+        {'symbol': "PLTR", 'name': "Palantir Technologies", 'sector': "Cloud & Software", 'allocation_percent': 4, 'buy': 24.0, 'reason': "Demande explosive pour l'Artificial Intelligence Platform (AIP)."},
+        {'symbol': "LLY", 'name': "Eli Lilly & Co.", 'sector': "Biotech & Santé", 'allocation_percent': 4, 'buy': 750.0, 'reason': "Dominance incontestée sur les traitements contre l'obésité GLP-1."},
+        {'symbol': "ARM", 'name': "Arm Holdings plc", 'sector': "IA & Semi-conducteurs", 'allocation_percent': 3, 'buy': 120.0, 'reason': "Adoption massive de l'architecture Armv9 dans les serveurs et mobiles IA."},
+        {'symbol': "SMCI", 'name': "Super Micro Computer", 'sector': "IA & Semi-conducteurs", 'allocation_percent': 3, 'buy': 800.0, 'reason': "Solutions de serveurs à refroidissement liquide pour clusters IA."},
+        {'symbol': "CRWD", 'name': "CrowdStrike Holdings", 'sector': "Crypto & Cybersécurité", 'allocation_percent': 3, 'buy': 310.0, 'reason': "Plateforme de cybersécurité cloud native Falcon ultra-solide."},
+        {'symbol': "COIN", 'name': "Coinbase Global", 'sector': "Crypto & Cybersécurité", 'allocation_percent': 3, 'buy': 220.0, 'reason': "Infrastructure d'échange crypto et dépositaire des ETF Bitcoin."},
+        {'symbol': "BRK.B", 'name': "Berkshire Hathaway", 'sector': "Conglomérat & Valeur", 'allocation_percent': 4, 'buy': 410.0, 'reason': "Réserve de trésorerie géante et stabilité défensive contre la volatilité."}
+    ]
 
-    selected_config = duration_portfolios.get(duration_months, duration_portfolios[3])
     ollama_used = False
-    ai_rationale = selected_config["rationale"]
-    recommended_stocks = selected_config["stocks"]
+    ai_rationale = f"Analyse multi-sectorielle Gemini 3.6 Flash : Sélection équilibrée de 16 opportunités majeures réparties sur {duration_months} mois."
+    recommended_stocks = raw_stocks_16
 
     # Try querying local Ollama instance if active
     try:
