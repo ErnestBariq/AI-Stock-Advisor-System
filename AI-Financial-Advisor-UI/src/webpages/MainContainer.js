@@ -130,27 +130,25 @@ function MainComponent() {
 
   // Initialize chart and update based on interval
   useEffect(() => {
+    if (!chartContainerRef.current) return;
+    chartContainerRef.current.innerHTML = '';
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
-      height: 400,
+      height: 380,
       layout: {
-        backgroundColor: '#0e0e10',
-        textColor: '#ffffff',
-        timeScale: {
-          borderColor: '#d1d4dc',
-          fixLeftEdge: true,
-          visible: true,
-          rightOffset: 10,
-          barSpacing: 10,
-          tickMarkFormatter: (time, tickMarkType, locale) => {
-            // Customize time format if needed
-            return new Date(time * 1000).toLocaleDateString(locale, {
-              month: 'short',
-              day: 'numeric',
-            });
-          },
-        },
-      }
+        background: { type: 'solid', color: 'transparent' },
+        textColor: '#cbd5e1',
+        fontSize: 12,
+      },
+      grid: {
+        vertLines: { color: 'rgba(255, 255, 255, 0.05)' },
+        horzLines: { color: 'rgba(255, 255, 255, 0.05)' },
+      },
+      timeScale: {
+        borderColor: 'rgba(255, 255, 255, 0.1)',
+        rightOffset: 10,
+        barSpacing: 10,
+      },
     });
 
     chartRef.current = chart;
@@ -168,37 +166,33 @@ function MainComponent() {
     if (!chartRef.current) return;
 
     let data = [];
-    let color = '#2962FF';
+    let color = '#38bdf8';
 
     switch (interval) {
       case '1D':
         data = dailyData;
-        color = '#2962FF';
+        color = '#38bdf8';
         break;
       case '1W':
         data = weeklyData;
-        color = 'rgb(225, 87, 90)';
+        color = '#34d399';
         break;
       case '1M':
         data = monthlyData;
-        color = 'rgb(242, 142, 44)';
+        color = '#a855f7';
         break;
       default:
         data = dailyData;
     }
 
     if (data && data.length > 0) {
-      // Remove the existing series if it exists
       if (chartRef.current.lineSeries) {
         chartRef.current.removeSeries(chartRef.current.lineSeries);
       }
 
-      // Create a new line series and set the data
-      chartRef.current.lineSeries = chartRef.current.addLineSeries({ color });
+      chartRef.current.lineSeries = chartRef.current.addLineSeries({ color, lineWidth: 3 });
       chartRef.current.lineSeries.setData(data);
       chartRef.current.timeScale().fitContent();
-    } else {
-      console.error("Data for the selected interval is undefined or empty.");
     }
   };
 
@@ -310,7 +304,15 @@ function MainComponent() {
         <div className="lists-container">
           {/* Top Gainers */}
           <div className="list">
-            <h2>Top 10 Gainers</h2>
+            <div className="list-header-row">
+              <h2>Top 10 Gainers</h2>
+              <button
+                className="btn-simulate-gainers"
+                onClick={() => navigate('/simulation', { state: { preset: 'top_gainers', stocks: topGainers } })}
+              >
+                ⚡ Simuler ce Panier Top Gainers
+              </button>
+            </div>
             <table>
               <thead>
                 <tr>

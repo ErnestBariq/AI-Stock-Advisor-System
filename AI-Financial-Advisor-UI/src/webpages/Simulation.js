@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Cpu, TrendingUp, DollarSign, Clock, AlertCircle, Zap, ShieldCheck, Filter } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { Play, Cpu, TrendingUp, DollarSign, Clock, AlertCircle, Zap, Filter } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,
@@ -12,6 +13,8 @@ import { runSimulation } from '../api/client';
 import './Simulation.css';
 
 const Simulation = () => {
+  const location = useLocation();
+  const isTopGainersPreset = location.state?.preset === 'top_gainers';
   const [amount, setAmount] = useState(5000);
   const [durationMonths, setDurationMonths] = useState(3);
   const [ollamaUrl] = useState('http://localhost:11434');
