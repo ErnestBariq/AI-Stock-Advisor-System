@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Play, Sliders, Cpu, TrendingUp, DollarSign, Clock, Sparkles, AlertCircle } from 'lucide-react';
+import { Play, Cpu, TrendingUp, DollarSign, Clock, Sparkles, AlertCircle } from 'lucide-react';
 import {
   ResponsiveContainer,
   AreaChart,
   Area,
   XAxis,
   YAxis,
-  Tooltip,
-  Legend
+  Tooltip
 } from 'recharts';
 import { runSimulation } from '../api/client';
 import './Simulation.css';
@@ -15,7 +14,7 @@ import './Simulation.css';
 const Simulation = () => {
   const [amount, setAmount] = useState(5000);
   const [durationMonths, setDurationMonths] = useState(3);
-  const [ollamaUrl, setOllamaUrl] = useState('http://localhost:11434');
+  const [ollamaUrl] = useState('http://localhost:11434');
   const [model, setModel] = useState('llama3');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
