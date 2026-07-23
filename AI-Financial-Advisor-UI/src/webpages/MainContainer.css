@@ -8,82 +8,107 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    padding: 10px 20px 80px 20px;
+    padding: 10px 20px 100px 20px;
     background: transparent;
+}
+
+.content-container {
+    width: 100%;
+    max-width: 1240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 /* Section Titles */
 .section-title {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 800;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
     color: #ffffff;
     text-align: center;
     letter-spacing: -0.02em;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* Graph Card Main Wrapper (Expanded & Spacious) */
+.chart-card-glass {
+    width: 100%;
+    max-width: 1200px;
+    background: rgba(18, 24, 38, 0.65);
+    backdrop-filter: blur(32px) saturate(190%);
+    -webkit-backdrop-filter: blur(32px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 28px;
+    padding: 24px;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.chart-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    padding-bottom: 14px;
+}
+
+.chart-symbol-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .chart-symbol-title {
-    width: 100%;
-    max-width: 900px;
-    margin: 0 auto 10px auto;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.6rem;
+    font-weight: 800;
     color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    margin: 0;
+    letter-spacing: -0.02em;
 }
 
-.chart-section {
+.chart-controls-group {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-    max-width: 1100px;
-}
-
-.chart-container {
-    width: 100%;
-    max-width: 900px;
-    height: 420px;
-    margin: 10px 0 20px 0;
-    background: rgba(18, 24, 38, 0.55);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 24px;
-    padding: 16px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+    gap: 16px;
 }
 
 /* Glass Pill Buttons for Intervals */
 .interval-buttons {
     display: flex;
-    gap: 8px;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 9999px;
+    padding: 4px;
 }
 
 .interval-buttons button {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(12px);
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.7);
+    border: none;
     border-radius: 9999px;
-    padding: 6px 14px;
+    padding: 6px 16px;
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.25s ease;
 }
 
-.interval-buttons button:hover,
+.interval-buttons button:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
 .interval-buttons button.active {
     background: #2563eb;
     color: #ffffff;
-    border-color: rgba(255, 255, 255, 0.35);
-    box-shadow: 0 8px 16px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 /* Glass Add to Portfolio Button */
@@ -92,8 +117,8 @@
     color: #ffffff;
     border: 1px solid rgba(255, 255, 255, 0.25);
     border-radius: 9999px;
-    padding: 12px 24px;
-    font-size: 0.95rem;
+    padding: 10px 22px;
+    font-size: 0.9rem;
     font-weight: 700;
     white-space: nowrap;
     cursor: pointer;
@@ -109,29 +134,36 @@
     box-shadow: 0 14px 30px rgba(56, 189, 248, 0.5);
 }
 
+.chart-container {
+    width: 100%;
+    height: 440px;
+    border-radius: 18px;
+    overflow: hidden;
+}
+
 /* Glass Top Movers Cards Grid */
 .lists-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 24px;
     width: 100%;
     max-width: 1200px;
     margin-top: 10px;
 }
 
 .list {
-    background: rgba(18, 24, 38, 0.55);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 24px;
-    padding: 20px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45);
+    background: rgba(18, 24, 38, 0.65) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+    border-radius: 28px !important;
+    padding: 20px !important;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.45) !important;
     transition: all 0.3s ease;
 }
 
 .list:hover {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.3) !important;
     transform: translateY(-3px);
 }
 
@@ -141,14 +173,14 @@
     align-items: center;
     margin-bottom: 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    padding-bottom: 10px;
+    padding-bottom: 12px;
 }
 
 .list h2 {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0;
+    font-size: 1.2rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
 }
 
 .btn-simulate-gainers {
@@ -156,8 +188,8 @@
     border: 1px solid rgba(52, 211, 153, 0.35);
     color: #34d399;
     border-radius: 9999px;
-    padding: 4px 12px;
-    font-size: 0.78rem;
+    padding: 6px 14px;
+    font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -172,55 +204,87 @@
     box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
 }
 
+/* Force dark glass table rendering (Fix White Boxes / Unreadable text) */
 .list table {
-    width: 100%;
-    border-collapse: collapse;
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 4px !important;
+    background: transparent !important;
+}
+
+.list thead tr {
+    background: transparent !important;
 }
 
 .list th {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 8px 6px;
-    text-align: left;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #94a3b8 !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    padding: 10px 12px !important;
+    border: none !important;
+}
+
+.list th:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.list th:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.list tbody tr {
+    background: rgba(255, 255, 255, 0.04) !important;
+    transition: all 0.2s ease !important;
+}
+
+.list tbody tr:hover {
+    background: rgba(255, 255, 255, 0.14) !important;
+    cursor: pointer !important;
 }
 
 .list td {
-    color: #ffffff;
-    font-size: 0.88rem;
-    padding: 10px 6px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #ffffff !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    padding: 11px 12px !important;
+    border: none !important;
 }
 
-.list tr {
-    transition: background 0.2s ease;
+.list tbody tr td:first-child {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    font-weight: 800 !important;
+    color: #38bdf8 !important;
 }
 
-.list tr:hover {
-    background: rgba(255, 255, 255, 0.08);
+.list tbody tr td:last-child {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 
 .positive-change {
     color: #34d399 !important;
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
 .negative-change {
     color: #f87171 !important;
-    font-weight: 700;
+    font-weight: 700 !important;
 }
 
 /* Glass Floating Chat Bar */
 .chat-interface {
     position: fixed;
-    bottom: 24px;
+    bottom: 20px;
     right: 24px;
     left: 300px;
     max-width: calc(100vw - 340px);
-    background: rgba(15, 23, 42, 0.85);
+    background: rgba(15, 23, 42, 0.88);
     backdrop-filter: blur(28px) saturate(190%);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -232,7 +296,7 @@
 }
 
 .chat-window {
-    max-height: 300px;
+    max-height: 280px;
     overflow-y: auto;
     padding: 12px;
     margin-bottom: 10px;

@@ -279,25 +279,28 @@ function MainComponent() {
         {/* Error Message */}
         {error && <p className="error-message">{error}</p>}
 
-        {selectedSymbol && <h2 className="chart-symbol-title">{selectedSymbol}</h2>}
-
-        {/* Interval Buttons */}
-        <div className="interval-buttons">
-          <button onClick={() => setChartInterval('1D')}>1D</button>
-          <button onClick={() => setChartInterval('1W')}>1W</button>
-          <button onClick={() => setChartInterval('1M')}>1M</button>
-        </div>
-
-        {/* Chart + Add to Portfolio */}
-        <div className="chart-section">
-          <div ref={chartContainerRef} className="chart-container w-full" />
-          <button
-            className="add-to-portfolio-button"
-            onClick={() => navigate(`/stocks/${selectedSymbol}`)}
-            disabled={!selectedSymbol}
-          >
-            Ajouter au portefeuille
-          </button>
+        {/* Expanded Glass Chart Card */}
+        <div className="chart-card-glass">
+          <div className="chart-header-row">
+            <div className="chart-symbol-badge">
+              <h2 className="chart-symbol-title">{selectedSymbol || 'Actions'}</h2>
+            </div>
+            <div className="chart-controls-group">
+              <div className="interval-buttons">
+                <button onClick={() => setChartInterval('1D')}>1D</button>
+                <button onClick={() => setChartInterval('1W')}>1W</button>
+                <button onClick={() => setChartInterval('1M')}>1M</button>
+              </div>
+              <button
+                className="add-to-portfolio-button"
+                onClick={() => navigate(`/stocks/${selectedSymbol}`)}
+                disabled={!selectedSymbol}
+              >
+                + Ajouter au portefeuille
+              </button>
+            </div>
+          </div>
+          <div ref={chartContainerRef} className="chart-container" />
         </div>
 
         {/* Display top gainers, losers, and most active */}
