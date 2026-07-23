@@ -132,11 +132,12 @@ function MainComponent() {
   useEffect(() => {
     if (!chartContainerRef.current) return;
     chartContainerRef.current.innerHTML = '';
+
     const chart = createChart(chartContainerRef.current, {
-      width: chartContainerRef.current.clientWidth,
-      height: 380,
+      width: chartContainerRef.current.clientWidth || 800,
+      height: 440,
       layout: {
-        background: { type: 'solid', color: 'transparent' },
+        background: { type: 'solid', color: '#141c2e' },
         textColor: '#cbd5e1',
         fontSize: 12,
       },
@@ -154,7 +155,16 @@ function MainComponent() {
     chartRef.current = chart;
     setChartInterval('1D'); // Set default to daily on load
 
+    const handleResize = () => {
+      if (chartContainerRef.current && chartRef.current) {
+        chartRef.current.applyOptions({ width: chartContainerRef.current.clientWidth });
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
     return () => {
+      window.removeEventListener('resize', handleResize);
       if (chartRef.current) {
         chartRef.current.remove();
       }
