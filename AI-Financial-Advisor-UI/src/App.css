@@ -1,34 +1,30 @@
-html,
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  width: 100%;
-  overflow-x: hidden;
-}
-
 .App {
   display: flex;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 10%, #1e293b 0%, #0f172a 60%, #030712 100%);
+  padding: 1rem;
+  gap: 1.25rem;
 }
 
 .app-content {
   display: flex;
   flex-direction: column;
   flex: 1;
-  height: 100vh;
+  height: calc(100vh - 2rem);
   overflow: hidden;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 28px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 main {
   flex: 1;
   overflow-y: auto;
   padding: 1.75rem;
-  background: rgba(15, 23, 42, 0.35);
-  backdrop-filter: blur(20px);
 }
 
 /* Glassmorphism Table styling */
@@ -36,6 +32,7 @@ table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  margin-top: 1rem;
 }
 
 th,
@@ -49,36 +46,53 @@ tr {
   transition: all 0.2s ease;
 }
 
+tbody tr {
+  background: rgba(255, 255, 255, 0.03);
+}
+
 tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+tbody tr:first-child td:first-child {
+  border-top-left-radius: 12px;
+}
+tbody tr:first-child td:last-child {
+  border-top-right-radius: 12px;
+}
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: 12px;
+}
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: 12px;
 }
 
 th {
-  background-color: rgba(255, 255, 255, 0.08);
-  color: #94a3b8;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  color: #ffffff;
 }
 
 /* Headings and paragraphs */
 h1, h2, h3, h4 {
-  color: #f8fafc;
+  color: #ffffff;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 p {
-  color: #94a3b8;
+  color: rgba(255, 255, 255, 0.8);
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.65;
 }
 
 /* Chart container */

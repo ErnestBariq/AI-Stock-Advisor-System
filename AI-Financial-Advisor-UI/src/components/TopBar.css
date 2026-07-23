@@ -1,109 +1,126 @@
 .topbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4rem;
-    z-index: 10;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 1rem;
-    background-color: #1f2a37;
-    color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.75rem;
+  height: 72px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(18, 24, 38, 0.35);
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 50;
 }
 
 .topbar-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .topbar-search {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: #2a3a4e;
-    border-radius: 20px;
-    padding: 0.17rem 1rem;
-    width: 22rem;
+  position: relative;
+  width: 360px;
 }
 
 .topbar-search-input {
-    width: 100%;
-    color: white;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    font-size: 1rem;
+  width: 100%;
+  padding: 9px 16px 9px 40px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.25s ease;
 }
 
-.topbar-search-input::placeholder {
-    color: rgba(255, 255, 255, 0.6);
+.topbar-search-input:focus {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.25);
 }
 
-.search-icon {
-    margin-left: 0.5rem;
-    color: rgba(255, 255, 255, 0.7);
+.topbar-search .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255, 255, 255, 0.55);
+  width: 18px;
+  height: 18px;
 }
 
 .search-results-dropdown {
-    position: absolute;
-    top: 4rem;
-    left: calc(50% - 11rem);
-    right: 0;
-    width: 22rem;
-    background-color: white;
-    border: 1px solid #ddd;
-    color: black;
-    border-top: none;
-    max-height: 300px;
-    overflow-y: auto;
-    z-index: 1001;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 115%;
+  left: 0;
+  right: 0;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+  max-height: 320px;
+  overflow-y: auto;
+  z-index: 100;
 }
 
 .search-result-item {
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  transition: background 0.2s ease;
 }
 
 .search-result-item:hover {
-    background-color: #f0f0f0;
-}
-
-.loading,
-.no-results {
-    padding: 10px 15px;
-    color: #666;
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .topbar-user-details {
-    display: flex;
-    flex-wrap: wrap;
-    margin-right: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  padding: 6px 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.topbar-user-details:hover {
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .user-icon {
-    width: 2rem;
-    height: 2rem;
-    color: white;
-    margin-right: 0.5rem;
+  width: 20px;
+  height: 20px;
+  color: #38bdf8;
 }
 
 .user-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
+  display: flex;
+  flex-direction: column;
 }
 
 .user-name {
-    font-weight: bold;
-    font-size: 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
 }
 
 .user-email {
-    font-size: 0.875rem;
-    color: #c0c0c0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.6);
 }
