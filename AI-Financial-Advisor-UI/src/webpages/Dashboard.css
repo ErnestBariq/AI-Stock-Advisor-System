@@ -1,0 +1,6 @@
+/* Dashboard.css */
+
+.dashboard {
+    padding-top: 64px;
+    /* Adds space so content isn't hidden behind the fixed TopBar */
+}

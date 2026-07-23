@@ -1,0 +1,77 @@
+/* Signup Page Form Container */
+.signup-form {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 25px 30px;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+    font-family: Arial, sans-serif;
+}
+
+/* Signup Page Title */
+.signup-title {
+    text-align: center;
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Input and Select Fields */
+.signup-input,
+.signup-select {
+    width: 100%;
+    padding: 10px;
+    margin: 12px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+/* Focus Effect for Inputs */
+.signup-input:focus,
+.signup-select:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+/* Signup Button Styling */
+.signup-button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    background-color: #4CAF50;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design for Signup Page */
+@media (max-width: 768px) {
+    .signup-form {
+        padding: 20px;
+    }
+
+    .signup-input,
+    .signup-select {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .signup-button {
+        font-size: 16px;
+    }
+}

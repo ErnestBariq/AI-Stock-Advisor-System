@@ -1,0 +1,126 @@
+/* General container styling */
+.account-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f6f9;
+    /* Slight gray background for contrast */
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Card styling */
+.account-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 800px;
+    /* Responsive max width */
+    width: 100%;
+    /* Take full width within max constraints */
+}
+
+/* Header styling */
+.account-header {
+    text-align: center;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+/* Section header styling */
+.section-header {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Details container styling */
+.details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+/* Column styling */
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Detail item styling */
+.detail-item {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    padding: 8px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.detail-item .icon {
+    margin-right: 12px;
+    color: #4a90e2;
+}
+
+/* Bottom section styling */
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Last login styling */
+.bottom-section .detail-item {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+/* Button styling */
+.delete-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    background-color: #ff4d4d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.delete-button:hover {
+    background-color: #ff0000;
+}
+
+.delete-icon {
+    margin-right: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .account-card {
+        max-width: 90%;
+        padding: 20px;
+    }
+
+    .details-container {
+        grid-template-columns: 1fr;
+    }
+
+    .bottom-section {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

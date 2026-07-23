@@ -1,0 +1,74 @@
+.sidebar {
+    background-color: #1f2a37;
+    width: 16rem;
+    height: 100vh;
+    padding-top: 2rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.sidebar-header {
+    padding-left: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+nav {
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+nav a {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    transition: background-color 0.2s ease;
+    color: white;
+    text-decoration: none;
+}
+
+nav a:hover {
+    background-color: #2a3140;
+}
+
+nav a.active {
+    background-color: #2a3140;
+    color: #4ac1e0;
+}
+
+nav a span {
+    margin-left: 1rem;
+}
+
+.logout-button {
+    padding: 1rem;
+    width: 85%;
+    display: flex;
+    align-self: center;
+    align-items: center;
+    /* Vertically align icon and label */
+    justify-content: flex-start;
+    /* Align content to the start of the button */
+    gap: 0.5rem;
+    /* Space between icon and label */
+    margin-bottom: 48px;
+    color: white;
+    /* Text color */
+    border-radius: 8px;
+    /* Rounded corners */
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #2a3140;
+}
+
+.logout-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}

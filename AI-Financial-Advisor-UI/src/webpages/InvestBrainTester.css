@@ -1,0 +1,200 @@
+/* InvestBrainTester.css — ported from 1 PROJECTS/Millionaire/docs/index.html */
+
+.invest-brain-tester {
+  --ib-bg: #0f1115;
+  --ib-card: #1a1d24;
+  --ib-border: #2a2e37;
+  --ib-text: #e6e8eb;
+  --ib-muted: #9aa1ac;
+  --ib-accent: #5b9dff;
+  --ib-ok: #4ade80;
+  --ib-hold: #fbbf24;
+  --ib-err: #f87171;
+
+  background: var(--ib-bg);
+  color: var(--ib-text);
+  padding: 24px;
+  border-radius: 10px;
+}
+
+.invest-brain-tester h1 {
+  font-size: 1.3rem;
+  margin: 0 0 4px;
+}
+
+.invest-brain-tester .subtitle {
+  color: var(--ib-muted);
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.invest-brain-tester .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 900px) {
+  .invest-brain-tester .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.invest-brain-tester .card {
+  background: var(--ib-card);
+  border: 1px solid var(--ib-border);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.invest-brain-tester .card h2 {
+  font-size: 1.05rem;
+  margin: 0 0 4px;
+}
+
+.invest-brain-tester .card .desc {
+  color: var(--ib-muted);
+  font-size: 0.8rem;
+  margin-bottom: 14px;
+}
+
+.invest-brain-tester label {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--ib-muted);
+  margin: 10px 0 4px;
+}
+
+.invest-brain-tester input,
+.invest-brain-tester textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--ib-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: var(--ib-text);
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.invest-brain-tester textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.invest-brain-tester .presets {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.invest-brain-tester .presets button {
+  background: transparent;
+  border: 1px solid var(--ib-border);
+  color: var(--ib-muted);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+
+.invest-brain-tester .presets button:hover {
+  border-color: var(--ib-accent);
+  color: var(--ib-accent);
+}
+
+.invest-brain-tester .run {
+  margin-top: 14px;
+  width: 100%;
+  background: var(--ib-accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.invest-brain-tester .run:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.invest-brain-tester .result {
+  margin-top: 14px;
+  border-top: 1px solid var(--ib-border);
+  padding-top: 12px;
+  min-height: 24px;
+}
+
+.invest-brain-tester .result pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.78rem;
+  background: rgba(128, 128, 128, 0.08);
+  border-radius: 6px;
+  padding: 10px;
+  margin: 0;
+  max-height: 340px;
+  overflow: auto;
+}
+
+.invest-brain-tester .badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.invest-brain-tester .badge.ok {
+  background: rgba(74, 222, 128, 0.15);
+  color: var(--ib-ok);
+}
+
+.invest-brain-tester .badge.hold {
+  background: rgba(251, 191, 36, 0.15);
+  color: var(--ib-hold);
+}
+
+.invest-brain-tester .badge.err {
+  background: rgba(248, 113, 113, 0.15);
+  color: var(--ib-err);
+}
+
+.invest-brain-tester .result-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.invest-brain-tester .result-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--ib-muted);
+}
+
+.invest-brain-tester .result-stats strong {
+  color: var(--ib-text);
+}
+
+.invest-brain-tester .result-text {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.invest-brain-tester .status-bar {
+  font-size: 0.75rem;
+  color: var(--ib-muted);
+  margin-bottom: 18px;
+  padding: 8px 12px;
+  border: 1px solid var(--ib-border);
+  border-radius: 6px;
+}
