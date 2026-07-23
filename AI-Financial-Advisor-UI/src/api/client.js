@@ -124,6 +124,14 @@ export const sendChatMessage = async (query, conversationHistory = []) => {
 };
 
 // ----------------------------------------------------
+// Alpha Vantage Direct (Recherche de symboles)
+// ----------------------------------------------------
+export const searchSymbolsAlphaVantage = async (query) => {
+  const url = `${API_CONFIG.ALPHA_VANTAGE_BASE_URL}?function=SYMBOL_SEARCH&keywords=${encodeURIComponent(query)}&apikey=${API_CONFIG.ALPHA_VANTAGE_API_KEY}`;
+  return fetch(url);
+};
+
+// ----------------------------------------------------
 // Simulation IA (Ollama / Llama.cpp) & Backtest
 // ----------------------------------------------------
 export const runSimulation = async ({ amount = 5000, durationMonths = 3, ollamaUrl = 'http://localhost:11434', model = 'llama3' }) => {
